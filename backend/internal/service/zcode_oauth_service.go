@@ -14,8 +14,6 @@ package service
 import (
 	"bytes"
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -52,10 +50,7 @@ type ZCodeOAuthPoll struct {
 
 // Init 发起 OAuth 流程，返回 flow_id 与授权 URL。
 func (s *ZCodeOAuthService) Init(ctx context.Context) (*ZCodeOAuthInit, error) {
-	pollToken, err := randomHex(32)
-	if err != nil {
-		return nil, fmt.Errorf("zcode oauth: generate poll token: %w", err)
-	}
+	pollToken := randomHex(32)
 
 	body := map[string]string{"provider": "zai"}
 	resp, err := s.doJSON(ctx, http.MethodPost, ZCodeOAuthBase+"/oauth/cli/init", pollToken, body)
@@ -312,12 +307,4 @@ func decodeJSON(resp *http.Response, v any) error {
 func drainAndClose(body io.ReadCloser) {
 	_, _ = io.Copy(io.Discard, body)
 	_ = body.Close()
-}
-
-func randomHex(nBytes int) (string, error) {
-	b := make([]byte, nBytes)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
 }

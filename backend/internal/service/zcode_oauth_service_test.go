@@ -45,25 +45,3 @@ func TestZCodeOAuthService_Init(t *testing.T) {
 		t.Fatalf("unexpected authorize_url %q", wrapper.Data.AuthorizeURL)
 	}
 }
-
-// TestZCodeRandomHex 验证随机十六进制生成。
-func TestZCodeRandomHex(t *testing.T) {
-	s, err := randomHex(16)
-	if err != nil {
-		t.Fatalf("randomHex failed: %v", err)
-	}
-	if len(s) != 32 {
-		t.Fatalf("expected 32 hex chars, got %d", len(s))
-	}
-	for _, c := range s {
-		isHex := (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
-		if !isHex {
-			t.Fatalf("non-hex char %q in %s", c, s)
-		}
-	}
-	// 两次调用应不同（概率上）
-	s2, _ := randomHex(16)
-	if s == s2 {
-		t.Fatal("randomHex returned identical values")
-	}
-}
