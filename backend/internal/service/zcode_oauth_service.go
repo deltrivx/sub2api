@@ -107,7 +107,8 @@ func (s *ZCodeOAuthService) Poll(ctx context.Context, flowID, pollToken string) 
 // ExchangeAPIKey 用 zai access_token 兑换最终的 API Key（格式 apikey.secretkey）。
 //
 // 流程：access_token → /api/auth/z/login 取业务 token → getCustomerInfo 取机构/项目
-//      → 创建/复用名为 "zcode-api-key" 的 API Key → copy 解密 secretKey。
+//
+//	→ 创建/复用名为 "zcode-api-key" 的 API Key → copy 解密 secretKey。
 func (s *ZCodeOAuthService) ExchangeAPIKey(ctx context.Context, accessToken string) (string, error) {
 	bizToken, err := s.loginZAI(ctx, accessToken)
 	if err != nil {
