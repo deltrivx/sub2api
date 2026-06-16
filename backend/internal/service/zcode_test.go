@@ -1,7 +1,6 @@
 package service
 
 import (
-	"os"
 	"testing"
 )
 
@@ -75,21 +74,3 @@ func TestZCodeUpstreamURLOverride(t *testing.T) {
 	}
 }
 
-// TestZCodeDefaultModelMapping 验证默认模型映射非空且含 GLM 主力模型。
-func TestZCodeDefaultModelMapping(t *testing.T) {
-	m := domainDefaultZCodeModelMapping()
-	if len(m) == 0 {
-		t.Fatal("默认模型映射不应为空")
-	}
-	if _, ok := m["glm-4.6"]; !ok {
-		t.Fatal("默认映射应包含 glm-4.6")
-	}
-}
-
-// domainDefaultZCodeModelMapping 间接引用 domain 包，避免在纯 service 单测里直接 import domain。
-// 这里直接断言常量本身（通过同包的间接：DefaultZCodeModelMapping 定义在 domain 包，
-// 本测试位于 service 包，故仅校验 project 已能识别该常量名编译通过即可）。
-func domainDefaultZCodeModelMapping() map[string]string {
-	// 占位：实际映射断言在 domain 包测试中覆盖。
-	return map[string]string{"glm-4.6": "glm-4.6"}
-}
