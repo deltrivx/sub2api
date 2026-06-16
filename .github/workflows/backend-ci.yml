@@ -67,3 +67,24 @@ jobs:
           version: v2.9
           args: --timeout=30m
           working-directory: backend
+
+  # 临时诊断：输出 gofmt 期望的 diff，便于远程修正对齐问题（不阻塞，始终成功）
+  gofmt-diff:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: backend/go.mod
+      - name: gofmt diff (zcode files)
+        working-directory: backend
+        run: |
+          echo "===== gofmt -d on zcode files ====="
+          gofmt -d internal/service/zcode_oauth_service.go || true
+          gofmt -d internal/service/zcode.go || true
+          gofmt -d internal/service/zcode_gateway_service.go || true
+          gofmt -d internal/service/zcode_test.go || true
+          gofmt -d internal/service/zcode_oauth_service_test.go || true
+          gofmt -d internal/domain/constants.go || true
+          echo "===== end gofmt diff ====="
