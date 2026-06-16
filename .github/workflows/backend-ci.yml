@@ -80,11 +80,12 @@ jobs:
       - name: gofmt diff (zcode files)
         working-directory: backend
         run: |
-          echo "===== gofmt -d on zcode files ====="
-          gofmt -d internal/service/zcode_oauth_service.go || true
-          gofmt -d internal/service/zcode.go || true
-          gofmt -d internal/service/zcode_gateway_service.go || true
-          gofmt -d internal/service/zcode_test.go || true
-          gofmt -d internal/service/zcode_oauth_service_test.go || true
-          gofmt -d internal/domain/constants.go || true
-          echo "===== end gofmt diff ====="
+          {
+            echo "## gofmt diff"
+            echo '```diff'
+            for f in internal/service/zcode_oauth_service.go internal/service/zcode.go internal/service/zcode_gateway_service.go internal/service/zcode_test.go internal/service/zcode_oauth_service_test.go internal/domain/constants.go; do
+              gofmt -d "$f" 2>&1 && true
+            done
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "diff written to step summary"
