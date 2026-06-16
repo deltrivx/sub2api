@@ -37,7 +37,7 @@ func NewZCodeOAuthService(httpClient *http.Client) *ZCodeOAuthService {
 
 // ZCodeOAuthInit 是 OAuth 初始化结果。
 type ZCodeOAuthInit struct {
-	FlowID      string `json:"flow_id"`
+	FlowID       string `json:"flow_id"`
 	AuthorizeURL string `json:"authorize_url"`
 }
 
