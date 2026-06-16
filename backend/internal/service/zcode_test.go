@@ -43,13 +43,13 @@ func TestZCodeBuildHeaders_APIKey(t *testing.T) {
 
 // TestZCodeBuildHeaders_DropHeaders 验证受控头部被剔除，且 x-zcode-* 前缀被剔除。
 func TestZCodeBuildHeaders_DropHeaders(t *testing.T) {
-	incoming := map[string]string{
-		"Host":            "example.com",
-		"Authorization":   "Bearer should-be-dropped",
-		"Content-Length":  "123",
-		"X-Custom":        "keep-me",
-		"X-ZCode-Foo":     "should-be-dropped",
-	}
+	// 用逐行赋值，避免 map 字面量对齐被 gofmt 改动。
+	incoming := map[string]string{}
+	incoming["Host"] = "example.com"
+	incoming["Authorization"] = "Bearer should-be-dropped"
+	incoming["Content-Length"] = "123"
+	incoming["X-Custom"] = "keep-me"
+	incoming["X-ZCode-Foo"] = "should-be-dropped"
 	_, headers := ZCodeBuildHeaders("apikey", "key", "", incoming)
 
 	if headers["Authorization"] == "Bearer should-be-dropped" {
@@ -68,8 +68,7 @@ func TestZCodeBuildHeaders_DropHeaders(t *testing.T) {
 
 // TestZCodeUpstreamURLOverride 验证环境变量覆盖上游端点。
 func TestZCodeUpstreamURLOverride(t *testing.T) {
-	os.Setenv("ZCODE_UPSTREAM_URL", "https://custom.example.com/messages")
-	defer os.Unsetenv("ZCODE_UPSTREAM_URL")
+	t.Setenv("ZCODE_UPSTREAM_URL", "https://custom.example.com/messages")
 
 	if got := ZCodeUpstreamURL(); got != "https://custom.example.com/messages" {
 		t.Fatalf("环境变量覆盖失败, got %s", got)

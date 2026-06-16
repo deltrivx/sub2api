@@ -100,15 +100,15 @@ func ZCodeBuildHeaders(mode, secret, verifyParam string, incomingHeaders map[str
 		authHeader, authValue = "x-api-key", secret
 	}
 
-	headers := map[string]string{
-		"content-type":         "application/json",
-		"anthropic-version":    ZCodeAnthropicVersion,
-		"User-Agent":           ZCodeUserAgent(),
-		"X-ZCode-App-Version":  ZCodeAppVersion,
-		"X-ZCode-Agent":        ZCodeAgent,
-		"HTTP-Referer":         ZCodeReferer,
-		authHeader:             authValue,
-	}
+	// 逐行赋值，避免 map 字面量对齐被 gofmt 改动。
+	headers := map[string]string{}
+	headers["content-type"] = "application/json"
+	headers["anthropic-version"] = ZCodeAnthropicVersion
+	headers["User-Agent"] = ZCodeUserAgent()
+	headers["X-ZCode-App-Version"] = ZCodeAppVersion
+	headers["X-ZCode-Agent"] = ZCodeAgent
+	headers["HTTP-Referer"] = ZCodeReferer
+	headers[authHeader] = authValue
 	if verifyParam != "" {
 		headers["X-Aliyun-Captcha-Verify-Param"] = verifyParam
 	}

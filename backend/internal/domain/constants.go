@@ -144,7 +144,6 @@ var DefaultBedrockModelMapping = map[string]string{
 	"claude-haiku-4-5-20251001": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
 }
 
-
 // DefaultZCodeModelMapping 是 ZCode/Z.AI 平台的默认模型映射。
 // ZCode 兼容 Anthropic Messages 协议，模型名直接透传到 ZCode 上游。
 // 此处列出 ZCode Coding Plan 常见的 GLM 系列模型；如上游新增模型可在此扩展。
