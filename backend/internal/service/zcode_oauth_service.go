@@ -41,11 +41,14 @@ type ZCodeOAuthInit struct {
 	AuthorizeURL string `json:"authorize_url"`
 }
 
-// ZCodeOAuthPoll 是轮询结果。
+// ZCodeOAuthPoll 字段:
+//   - Status: "pending" | "ready" | "failed"
+//   - Token:  zcode Coding Plan JWT（status=ready 时有值）
+//   - ZAI:    zai access_token 等
 type ZCodeOAuthPoll struct {
-	Status string                 `json:"status"` // "pending" | "ready" | "failed"
-	Token  string                 `json:"token"`  // zcode Coding Plan JWT（status=ready 时有值）
-	ZAI    map[string]any         `json:"zai"`    // zai access_token 等
+	Status string         `json:"status"`
+	Token  string         `json:"token"`
+	ZAI    map[string]any `json:"zai"`
 }
 
 // Init 发起 OAuth 流程，返回 flow_id 与授权 URL。
