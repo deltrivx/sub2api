@@ -68,24 +68,37 @@ jobs:
           args: --timeout=30m
           working-directory: backend
 
-  # 临时诊断：输出 gofmt 期望的 diff，便于远程修正对齐问题（不阻塞，始终成功）
-  gofmt-diff:
+  # 自动用 gofmt 修正 zcode 文件并提交回分支（纯 GitHub 内格式化，非本地/nas构建）
+  gofmt-autofix:
     runs-on: ubuntu-latest
-    continue-on-error: true
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: feature/zcode-provider
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-go@v6
         with:
           go-version-file: backend/go.mod
-      - name: gofmt diff (zcode files)
+      - name: gofmt -w zcode files
         working-directory: backend
         run: |
-          {
-            echo "## gofmt diff"
-            echo '```diff'
-            for f in internal/service/zcode_oauth_service.go internal/service/zcode.go internal/service/zcode_gateway_service.go internal/service/zcode_test.go internal/service/zcode_oauth_service_test.go internal/domain/constants.go; do
-              gofmt -d "$f" 2>&1 && true
-            done
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo "diff written to step summary"
+          gofmt -w internal/service/zcode_oauth_service.go \
+                internal/service/zcode.go \
+                internal/service/zcode_gateway_service.go \
+                internal/service/zcode_test.go \
+                internal/service/zcode_oauth_service_test.go \
+                internal/domain/constants.go \
+                internal/service/account.go
+      - name: commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "no formatting changes"
+          else
+            git add -A
+            git commit -m "style: gofmt -w zcode files (auto-formatted by CI)"
+            git push
+          fi
