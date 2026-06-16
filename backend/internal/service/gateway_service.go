@@ -6249,6 +6249,13 @@ func (s *GatewayService) buildUpstreamRequest(ctx context.Context, c *gin.Contex
 		return req, body, err
 	}
 
+	// ZCode/Z.AI 平台：走独立的 Anthropic-Messages 兼容上游，附加 ZCode 专有请求头
+	// （X-ZCode-* / X-Aliyun-Captcha-Verify-Param），完全绕开 Anthropic 指纹/CCH 链路。
+	if account.Platform == PlatformZCode {
+		req, err := s.buildUpstreamRequestZCode(ctx, c, account, body)
+		return req, body, err
+	}
+
 	// 确定目标URL
 	targetURL := claudeAPIURL
 	if account.Type == AccountTypeAPIKey {

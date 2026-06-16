@@ -125,3 +125,22 @@ func ZCodeBuildHeaders(mode, secret, verifyParam string, incomingHeaders map[str
 	}
 	return targetURL, headers
 }
+
+// ZCodeResolveModeAndSecret 根据账号类型解析 ZCode 上游模式与凭证。
+//   - APIKey 模式：使用 credentials 中的 api_key，走无需验证码的回退端点
+//   - OAuth/JWT 模式：使用 credentials 中的 jwt（Coding Plan），回退到 access_token
+//
+// secret 为空表示凭证缺失，调用方应返回错误。
+func ZCodeResolveModeAndSecret(account *Account) (mode, secret string) {
+	switch account.Type {
+	case AccountTypeAPIKey:
+		return "apikey", account.GetCredential("api_key")
+	case AccountTypeOAuth, AccountTypeSetupToken:
+		if jwt := account.GetCredential("jwt"); jwt != "" {
+			return "oauth", jwt
+		}
+		return "oauth", account.GetCredential("access_token")
+	default:
+		return "apikey", account.GetCredential("api_key")
+	}
+}
