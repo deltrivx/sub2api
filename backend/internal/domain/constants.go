@@ -22,6 +22,7 @@ const (
 	PlatformOpenAI      = "openai"
 	PlatformGemini      = "gemini"
 	PlatformAntigravity = "antigravity"
+	PlatformZCode       = "zcode"
 )
 
 // Account type constants
@@ -141,4 +142,21 @@ var DefaultBedrockModelMapping = map[string]string{
 	// Claude Haiku
 	"claude-haiku-4-5":          "us.anthropic.claude-haiku-4-5-20251001-v1:0",
 	"claude-haiku-4-5-20251001": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+}
+
+
+// DefaultZCodeModelMapping 是 ZCode/Z.AI 平台的默认模型映射。
+// ZCode 兼容 Anthropic Messages 协议，模型名直接透传到 ZCode 上游。
+// 此处列出 ZCode Coding Plan 常见的 GLM 系列模型；如上游新增模型可在此扩展。
+var DefaultZCodeModelMapping = map[string]string{
+	"glm-4.6":      "glm-4.6",
+	"glm-4.6-air":  "glm-4.6-air",
+	"glm-4.6-airx": "glm-4.6-airx",
+	"glm-4.5":      "glm-4.5",
+	"glm-4.5-air":  "glm-4.5-air",
+	"glm-4.5-airx": "glm-4.5-airx",
+	"glm-4-plus":   "glm-4-plus",
+	"glm-4-long":   "glm-4-long",
+	"glm-4-flash":  "glm-4-flash",
+	"glm-4-flashx": "glm-4-flashx",
 }
